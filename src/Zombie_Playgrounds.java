@@ -8,6 +8,8 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import java.awt.event.KeyAdapter;
@@ -20,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -56,6 +59,8 @@ public class Zombie_Playgrounds extends JComponent {
     boolean sPressed;
     boolean aPressed;
     boolean dPressed;
+    
+    int playerHealth = 150;
 
     // Bullet speed and direction variables
     int bulletSpeed = 10;
@@ -180,8 +185,8 @@ public class Zombie_Playgrounds extends JComponent {
         blocks[4] = new Rectangle(600, 150, 700, 10); // right side of wall
 
         // for loop for zombies
-        for (int i = 0; i < 10; i++) {
-            enemyArray.add(new Rectangle(400 + (i * 50), 400, 70, 70));
+        for (int i = 0; i < 1; i++) {
+            enemyArray.add(new Rectangle(400 + (i * 50), 10, 70, 70));
             
 
         }
@@ -219,6 +224,7 @@ public class Zombie_Playgrounds extends JComponent {
             zombieZombieCollisions();
             shooting();
             bulletCollisions();
+            playerHealth();
 
             // delay timer used to control fire rate for both players
             if (startTime > nextTime) {
@@ -725,5 +731,31 @@ public class Zombie_Playgrounds extends JComponent {
         }
         return img;
     }
+    
+    public void playerHealth(){
+        for (int j = 0; j < enemyArray.size(); j++) {
+            
 
+                if (enemyArray.get(j).intersects(player)) {
+                    
+                    playerHealth = playerHealth - 50;
+                   
+                }
+                
+                if (playerHealth == 0) {
+                    System.out.println("Player Health: 0");
+                }
+                
+                
+                
+                
+                
+                
+                
+
+            
+        }
+        
+    }
+    
 }
