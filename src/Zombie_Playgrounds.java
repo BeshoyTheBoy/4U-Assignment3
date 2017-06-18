@@ -47,10 +47,9 @@ public class Zombie_Playgrounds extends JComponent {
 
     int xVel;
     int yVel;
-    
+
     BufferedImage zombie = loadImage("zombie.png");
-
-
+    BufferedImage megaman = loadImage("megaman.png");
 
     // booleans
     boolean wPressed;
@@ -70,7 +69,7 @@ public class Zombie_Playgrounds extends JComponent {
     double angle = 0;
     Robot r;
     // dimensions for player
-    Rectangle player = new Rectangle(300, 300, 50, 50);
+    Rectangle player = new Rectangle(300, 300, 70, 70);
     // array of blocks
     Rectangle[] blocks = new Rectangle[5];
     // array list for zombies
@@ -127,17 +126,15 @@ public class Zombie_Playgrounds extends JComponent {
         g2d.translate(player.x + player.width / 2, player.y + player.height / 2);
         g2d.rotate(angle);
         // creating player figure (currently a circle)
-        g.fillOval(-player.width / 2, -player.height / 2, player.width, player.height);
-        //g.fillOval(player.x, player.y, player.width, player.height);
+//        g.fillRect(-player.width / 2, -player.height / 2, player.width, player.height);
+        g.drawImage(megaman, -player.width / 2, -player.height / 2, player.width, player.height, null);
         g.setColor(Color.MAGENTA);
         // creating a rectangle on top of the player figure in order to test mouse movement
-        g.fillRect(-player.width / 2, -player.height / 2, 100, 5);
+//        g.fillRect(-player.width / 2, -player.height / 2, 100, 5);
 
         // reverting screen to before rotation
         g2d.rotate(-angle);
         g2d.translate(-player.x - player.width / 2, -player.y - player.height / 2);
-        
-        
 
         g.setColor(Color.GREEN);
 
@@ -145,9 +142,11 @@ public class Zombie_Playgrounds extends JComponent {
         for (Rectangle enemy : enemyArray) {
             g.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
             g.drawImage(zombie, enemy.x, enemy.y, enemy.width, enemy.height, null);
+            
+            
+            
+            
         }
-        
-        
 
         g.setColor(Color.darkGray);
 
@@ -167,18 +166,6 @@ public class Zombie_Playgrounds extends JComponent {
 
         // GAME DRAWING ENDS HERE
     }
-    
-     public BufferedImage loadImage(String filename) {
-        BufferedImage img = null;
-        try {
-            File file = new File(filename);
-            img = ImageIO.read(file);
-        } catch (IOException e) {
-            //if there is error, print
-
-        }
-        return img;
-    }
 
     // This method is used to do any pre-setup you might need to do
     // This is run before the game loop begins!
@@ -194,7 +181,8 @@ public class Zombie_Playgrounds extends JComponent {
 
         // for loop for zombies
         for (int i = 0; i < 10; i++) {
-            enemyArray.add(new Rectangle(400 + (i * 50), 400, 30, 30));
+            enemyArray.add(new Rectangle(400 + (i * 50), 400, 70, 70));
+            
 
         }
 
@@ -555,16 +543,16 @@ public class Zombie_Playgrounds extends JComponent {
             player.x = 0;
         }
         // do not allow player to go off to the right
-        if (player.x >= 950) {
-            player.x = 950;
+        if (player.x >= 930) {
+            player.x = 930;
         }
         // do not allow player to go off to the top
         if (player.y <= 0) {
             player.y = 0;
         }
         // do not allow player to go off to the bottom
-        if (player.y >= 750) {
-            player.y = 750;
+        if (player.y >= 730) {
+            player.y = 730;
         }
 
         for (Rectangle enemy : enemyArray) {
@@ -680,20 +668,17 @@ public class Zombie_Playgrounds extends JComponent {
 //            bullets.y += yVel;
 //
 //        }
-        
-            for (int i = 0; i < bullet.size(); i++) {
+        for (int i = 0; i < bullet.size(); i++) {
 
-                bullet.get(i).x += xVel;
-                bullet.get(i).y += yVel;
+            bullet.get(i).x += xVel;
+            bullet.get(i).y += yVel;
 
-            }
         }
-
-    
+    }
 
     public void bulletCollisions() {
 
-        //MODIFIED BY ME
+        //run through enemy and bullet arrays and whenever a single bullet collides with an enemy, both are removed
         for (int j = 0; j < enemyArray.size(); j++) {
             for (int i = 0; i < bullet.size(); i++) {
 
@@ -708,7 +693,7 @@ public class Zombie_Playgrounds extends JComponent {
             }
         }
 
-        //ADDED BY ME
+        //
         for (int i = 0; i < bullet.size(); i++) {
             if (bullet.get(i).x + bullet.get(i).width >= WIDTH || bullet.get(i).x <= 0
                     || bullet.get(i).y <= 0 || bullet.get(i).y + bullet.get(i).height >= HEIGHT) {
@@ -728,6 +713,17 @@ public class Zombie_Playgrounds extends JComponent {
             }
 
         }
+    }
+
+    public static BufferedImage loadImage(String name) {
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File(name));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+        return img;
     }
 
 }
