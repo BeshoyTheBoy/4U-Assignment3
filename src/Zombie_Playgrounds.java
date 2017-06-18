@@ -144,7 +144,7 @@ public class Zombie_Playgrounds extends JComponent {
         // for loop to draw enemies
         for (Rectangle enemy : enemyArray) {
             g.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-            g.drawImage(pic, enemy.x, enemy.y, enemy.width, enemy.height, null);
+            g.drawImage(zombie, enemy.x, enemy.y, enemy.width, enemy.height, null);
         }
         
         
