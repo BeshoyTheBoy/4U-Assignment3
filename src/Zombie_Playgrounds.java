@@ -15,10 +15,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -43,6 +47,10 @@ public class Zombie_Playgrounds extends JComponent {
 
     int xVel;
     int yVel;
+    
+    BufferedImage zombie = loadImage("zombie.png");
+
+
 
     // booleans
     boolean wPressed;
@@ -58,6 +66,7 @@ public class Zombie_Playgrounds extends JComponent {
 
     // whether or not the bullet for player 1 is travelling through the air
     boolean p1Pending = false;
+
     double angle = 0;
     Robot r;
     // dimensions for player
@@ -72,7 +81,7 @@ public class Zombie_Playgrounds extends JComponent {
     ArrayList<Rectangle> bullet = new ArrayList();
     Iterator<Rectangle> it = bullet.iterator();
     // Controls the delay in the shooting mechanism a.k.a "fire rate"
-    int delay = 800;
+    int delay = 200;
     long nextTime = 0;
 
     // GAME VARIABLES END HERE
@@ -127,13 +136,18 @@ public class Zombie_Playgrounds extends JComponent {
         // reverting screen to before rotation
         g2d.rotate(-angle);
         g2d.translate(-player.x - player.width / 2, -player.y - player.height / 2);
+        
+        
 
         g.setColor(Color.GREEN);
 
         // for loop to draw enemies
         for (Rectangle enemy : enemyArray) {
             g.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+            g.drawImage(pic, enemy.x, enemy.y, enemy.width, enemy.height, null);
         }
+        
+        
 
         g.setColor(Color.darkGray);
 
@@ -152,6 +166,18 @@ public class Zombie_Playgrounds extends JComponent {
         }
 
         // GAME DRAWING ENDS HERE
+    }
+    
+     public BufferedImage loadImage(String filename) {
+        BufferedImage img = null;
+        try {
+            File file = new File(filename);
+            img = ImageIO.read(file);
+        } catch (IOException e) {
+            //if there is error, print
+
+        }
+        return img;
     }
 
     // This method is used to do any pre-setup you might need to do
@@ -281,9 +307,9 @@ public class Zombie_Playgrounds extends JComponent {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 fire = true;
 
-                xVel = (int) (Math.cos((angle)) * 5);
+                xVel = (int) (Math.cos((angle)) * bulletSpeed);
 
-                yVel = (int) (Math.sin((angle)) * 5);
+                yVel = (int) (Math.sin((angle)) * bulletSpeed);
 
             }
 
@@ -648,32 +674,60 @@ public class Zombie_Playgrounds extends JComponent {
 
         }
 
-        for (Rectangle bullets : bullet) {
+//        for (Rectangle bullets : bullet) {
+//
+//            bullets.x += xVel;
+//            bullets.y += yVel;
+//
+//        }
+        
+            for (int i = 0; i < bullet.size(); i++) {
 
-            bullets.x += xVel;
-            bullets.y += yVel;
+                bullet.get(i).x += xVel;
+                bullet.get(i).y += yVel;
 
-            bullets.x += bulletSpeed;
-
+            }
         }
 
-    }
+    
 
     public void bulletCollisions() {
 
-        for (Rectangle enemy : enemyArray) {
-
+        //MODIFIED BY ME
+        for (int j = 0; j < enemyArray.size(); j++) {
             for (int i = 0; i < bullet.size(); i++) {
 
-                if (enemy.intersects(bullet.get(i))) {
+                if (enemyArray.get(j).intersects(bullet.get(i))) {
 
                     bullet.remove(i);
+                    //ADDED BY ME
+                    enemyArray.remove(j);
 
+                }
+
+            }
+        }
+
+        //ADDED BY ME
+        for (int i = 0; i < bullet.size(); i++) {
+            if (bullet.get(i).x + bullet.get(i).width >= WIDTH || bullet.get(i).x <= 0
+                    || bullet.get(i).y <= 0 || bullet.get(i).y + bullet.get(i).height >= HEIGHT) {
+                bullet.remove(i);
+            }
+
+        }
+        // when a bullet impacts a wall it is removed
+        for (int i = 0; i < blocks.length; i++) {
+            for (int a = 0; a < bullet.size(); a++) {
+
+                if (blocks[i].intersects(bullet.get(a))) {
+
+                    bullet.remove(a);
                 }
 
             }
 
         }
-
     }
+
 }
