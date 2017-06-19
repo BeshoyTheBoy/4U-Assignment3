@@ -830,7 +830,10 @@ public class Zombie_Playgrounds extends JComponent {
 
         boolean on = false;
 
-        long current = System.currentTimeMillis();
+        long current = 0;
+        
+        current = System.currentTimeMillis();
+        
 
         if (current > spawnTime) {
             on = false;
@@ -838,7 +841,7 @@ public class Zombie_Playgrounds extends JComponent {
         }
 
         // for loop to spawn enemies
-        if (on == true) {
+        if (on == false) {
             for (int i = 0; i < zombieWave; i++) {
                 enemyArray.add(new Rectangle(400 + (i * 50), 10, 36, 60));
 
