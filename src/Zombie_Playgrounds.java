@@ -42,51 +42,72 @@ public class Zombie_Playgrounds extends JComponent {
     // you just need to select an approproate framerate
     long desiredFPS = 60;
     long desiredTime = (1000) / desiredFPS;
+
     // YOUR GAME VARIABLES WOULD GO HERE
-
-    // For determining coordiantes
-    int mouseX;
-    int mouseY;
-
+    // for bullet velocities
     int xVel;
     int yVel;
 
-    BufferedImage zombie = loadImage("zombie.png");
-    BufferedImage megaman = loadImage("megaman.png");
+    // player health int
+    int playerHealth = 150;
 
-    // booleans
+    // Bullet speeds
+    int bulletSpeed = 10;
+
+    // Controls the delay in the shooting mechanism a.k.a "fire rate"
+    int delay = 200;
+    long nextTime = 0;
+
+    // booleans for w, a, s, d 
     boolean wPressed;
     boolean sPressed;
     boolean aPressed;
     boolean dPressed;
-    
-    int playerHealth = 150;
 
-    // Bullet speed and direction variables
-    int bulletSpeed = 10;
+    // boolean for if zombie has attacked player
+    boolean zombieHit = false;
 
-    // Boolean used to identify if the "shooting" button has been pressed
+    // boolean used to identify if the "shooting" button has been pressed
     boolean fire = false;
 
-    // whether or not the bullet for player 1 is travelling through the air
-    boolean p1Pending = false;
+    // whether or not the bullet is travelling through the air
+    boolean pending = false;
 
+    // angle for determining where player is facing
     double angle = 0;
     Robot r;
-    // dimensions for player
+
+    // rectangle to act as player
     Rectangle player = new Rectangle(300, 300, 70, 70);
-    // array of blocks
+
+    // array of all map elements
     Rectangle[] blocks = new Rectangle[5];
-    // array list for zombies
+
+    // array list for enemies
     ArrayList<Rectangle> enemyArray = new ArrayList();
+
+    // iterator for enemies
     Iterator<Rectangle> eit = enemyArray.iterator();
 
-    // for player 1
+    // array list for bullets
     ArrayList<Rectangle> bullet = new ArrayList();
+
+    // iterator for rectangles
     Iterator<Rectangle> it = bullet.iterator();
-    // Controls the delay in the shooting mechanism a.k.a "fire rate"
-    int delay = 200;
-    long nextTime = 0;
+
+    // zombie image loaded
+    BufferedImage zombie = loadImage("zombie.png");
+
+    // player image loaded
+    BufferedImage megaman = loadImage("megaman.png");
+    
+    // crate image loaded
+    BufferedImage crate = loadImage("crate.png");
+    
+    // fence image loaded
+    BufferedImage fence = loadImage("fence.png");
+    
+    BufferedImage background = loadImage("background.png");
 
     // GAME VARIABLES END HERE
     // Constructor to create the Frame and place the panel in
@@ -125,6 +146,8 @@ public class Zombie_Playgrounds extends JComponent {
 
         // always clear the screen first!
         g.clearRect(0, 0, WIDTH, HEIGHT);
+        
+        g.drawImage(background, 0, 0, 1280, 800, null);
 
         // GAME DRAWING GOES HERE
         g.setColor(Color.cyan);
@@ -145,25 +168,28 @@ public class Zombie_Playgrounds extends JComponent {
 
         // for loop to draw enemies
         for (Rectangle enemy : enemyArray) {
-            g.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+//            g.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
             g.drawImage(zombie, enemy.x, enemy.y, enemy.width, enemy.height, null);
-            
-            
-            
-            
+
         }
 
         g.setColor(Color.darkGray);
 
-        // use a for loop to go through the array of blocks
+        // use a for loop to go through the array of blocks and draw them
         for (int i = 0; i < blocks.length; i++) {
             if (blocks[i] != null) {
-                g.fillRect(blocks[i].x, blocks[i].y, blocks[i].width, blocks[i].height);
+//                g.fillRect(blocks[i].x, blocks[i].y, blocks[i].width, blocks[i].height);
+                g.drawImage(crate, blocks[0].x, blocks[0].y, blocks[0].width, blocks[0].height, null);
+                g.drawImage(crate, blocks[1].x, blocks[1].y, blocks[1].width, blocks[1].height, null);
+                g.drawImage(crate, blocks[2].x, blocks[2].y, blocks[2].width, blocks[2].height, null);
+                
+                g.drawImage(fence, blocks[3].x, blocks[3].y, blocks[3].width, blocks[3].height, null);
+                g.drawImage(fence, blocks[4].x, blocks[4].y, blocks[4].width, blocks[4].height, null);
             }
         }
 
-        g.setColor(Color.RED);
-        // creates bullets for player 1
+        g.setColor(Color.ORANGE);
+        // for loop to draw bullets when fired
         for (Rectangle bullets : bullet) {
             g.fillRect(bullets.x, bullets.y, bullets.width, bullets.height);
 
@@ -184,13 +210,13 @@ public class Zombie_Playgrounds extends JComponent {
         blocks[3] = new Rectangle(0, 150, 400, 10); // left side of wall
         blocks[4] = new Rectangle(600, 150, 700, 10); // right side of wall
 
-        // for loop for zombies
+        // for loop to spawn enemies
         for (int i = 0; i < 1; i++) {
             enemyArray.add(new Rectangle(400 + (i * 50), 10, 70, 70));
-            
 
         }
 
+        // MOUSE ROTATION
         try {
             r = new Robot();
         } catch (AWTException ex) {
@@ -220,6 +246,7 @@ public class Zombie_Playgrounds extends JComponent {
 
             // all your game rules and move is done in here
             // GAME LOGIC STARTS HERE
+            // call all methods
             collisions();
             zombieZombieCollisions();
             shooting();
@@ -229,7 +256,7 @@ public class Zombie_Playgrounds extends JComponent {
             // delay timer used to control fire rate for both players
             if (startTime > nextTime) {
                 nextTime = startTime + delay;
-                p1Pending = false;
+                pending = false;
 
             }
 
@@ -294,9 +321,6 @@ public class Zombie_Playgrounds extends JComponent {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            // for mouse coordinates
-            mouseX = e.getX();
-            mouseY = e.getY();
 
             if (e.getButton() == MouseEvent.BUTTON1) {
                 fire = true;
@@ -325,18 +349,23 @@ public class Zombie_Playgrounds extends JComponent {
         // if the mouse has moved is
         @Override
         public void mouseMoved(MouseEvent e) {
+
+            // int to store mouse x and y positions
             int mx = e.getX();
             int my = e.getY();
 
+            // int x = mouse x - players x
             int x = mx - player.x;
+            // int y = mouse y - players y
             int y = my - player.y;
 
+            // these calculations above are used to do some simple SOHCAHTOA calculations
+            // angle is based upon mouse location, and origin (in this case the player)
             angle = Math.atan2(y, x);
             if (angle < 0) {
                 angle = angle + Math.toRadians(360);
             }
 
-            //System.out.println("angle: " + Math.toDegrees(angle));          
             int num = (int) (5 * Math.cos(angle));
 
         }
@@ -489,7 +518,7 @@ public class Zombie_Playgrounds extends JComponent {
                     }
 
                     // do the same but for the y values
-                    // set my overlap as a number - -1 means not set
+                    // set enemy overlap as a number - -1 means not set
                     int overlapY = -1;
                     // enemy is above the block
                     if (enemy.y <= blocks[i].y) {
@@ -503,10 +532,10 @@ public class Zombie_Playgrounds extends JComponent {
                     // now check which overlap is smaller
                     // we will correct that one because it will be less obvious!
                     // fix the x overlapping
-                    // move the enemys x i so the no longer hit the block
+                    // move the enemy's x i so the no longer hit the block
                     // we also fix the dx so that we are no longer changing that
                     if (overlapX < overlapY) {
-                        // which side am I on?
+                        // which side is the enemy on?
                         // on the right side
                         if (enemy.x <= blocks[i].x) {
                             enemy.x = blocks[i].x - enemy.width;
@@ -525,9 +554,9 @@ public class Zombie_Playgrounds extends JComponent {
                             // no more y collision
                             enemy.y = blocks[i].y - enemy.height;
 
-                            // I'm on the block so not in the air!
+                            // enemy is on the block so not in the air!
                         } else {
-                            // im under the block, just fix the overlap
+                            // enemy is under the block, just fix the overlap
                             enemy.y = blocks[i].y + blocks[i].height;
 
                             // take position of enemy, take size of object, compare them ( size of obj - position of enemy) if its less than half the obj - move left, if not move right
@@ -563,6 +592,7 @@ public class Zombie_Playgrounds extends JComponent {
 
         for (Rectangle enemy : enemyArray) {
 
+            // do not allow enemy to go off to the left
             if (enemy.x <= 0) {
                 enemy.x = 0;
             }
@@ -660,20 +690,16 @@ public class Zombie_Playgrounds extends JComponent {
 
         // shooting
         if (fire) {
-            if (p1Pending == false) {
-                bullet.add(new Rectangle(player.x, player.y, 10, 10));
-                // passed = false;
-                p1Pending = true;
+            if (pending == false) {
+                bullet.add(new Rectangle(player.x + 50, player.y + 28, 10, 10));
+
+                //
+                pending = true;
             }
 
         }
 
-//        for (Rectangle bullets : bullet) {
-//
-//            bullets.x += xVel;
-//            bullets.y += yVel;
-//
-//        }
+        // change the velocity of every bullet
         for (int i = 0; i < bullet.size(); i++) {
 
             bullet.get(i).x += xVel;
@@ -684,14 +710,17 @@ public class Zombie_Playgrounds extends JComponent {
 
     public void bulletCollisions() {
 
-        //run through enemy and bullet arrays and whenever a single bullet collides with an enemy, both are removed
+        // run through enemy and bullet arrays and whenever a single bullet collides with an enemy, both are removed
         for (int j = 0; j < enemyArray.size(); j++) {
             for (int i = 0; i < bullet.size(); i++) {
 
+                // if enemy is shot
                 if (enemyArray.get(j).intersects(bullet.get(i))) {
 
+                    // remove the bullet
                     bullet.remove(i);
-                    //ADDED BY ME
+
+                    // and the enemy 
                     enemyArray.remove(j);
 
                 }
@@ -699,7 +728,7 @@ public class Zombie_Playgrounds extends JComponent {
             }
         }
 
-        //
+        // whenever a bullet goes off screen, remove it
         for (int i = 0; i < bullet.size(); i++) {
             if (bullet.get(i).x + bullet.get(i).width >= WIDTH || bullet.get(i).x <= 0
                     || bullet.get(i).y <= 0 || bullet.get(i).y + bullet.get(i).height >= HEIGHT) {
@@ -721,6 +750,7 @@ public class Zombie_Playgrounds extends JComponent {
         }
     }
 
+    // method for loading images
     public static BufferedImage loadImage(String name) {
         BufferedImage img = null;
         try {
@@ -731,31 +761,33 @@ public class Zombie_Playgrounds extends JComponent {
         }
         return img;
     }
-    
-    public void playerHealth(){
+
+    public void playerHealth() {
+
+        // for all enemies
         for (int j = 0; j < enemyArray.size(); j++) {
-            
 
-                if (enemyArray.get(j).intersects(player)) {
-                    
-                    playerHealth = playerHealth - 50;
-                   
-                }
-                
-                if (playerHealth == 0) {
-                    System.out.println("Player Health: 0");
-                }
-                
-                
-                
-                
-                
-                
-                
+            // if enemy intersects with player
+            if (enemyArray.get(j).intersects(player) && zombieHit == false) {
 
-            
+                // take 50 hp off player's health (max player hp is 150)
+                playerHealth = playerHealth - 50;
+                // change boolean to true, as in zombie did hit player
+                zombieHit = true;
+
+            }
+            // if zombie did hit player, allow 1 second before zombie can attack player again
+            if (zombieHit == true) {
+
+            }
+
+            // if player health = 0, the palyer is dead
+            if (playerHealth == 0) {
+                System.out.println("Player Health: 0");
+            }
+
         }
-        
+
     }
-    
+
 }
