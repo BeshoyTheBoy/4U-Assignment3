@@ -48,6 +48,8 @@ public class Zombie_Playgrounds extends JComponent {
     // for bullet velocities
     int xVel;
     int yVel;
+    
+    int bullets = 0;
 
     int kills = 0;
 
@@ -352,6 +354,11 @@ public class Zombie_Playgrounds extends JComponent {
 
             if (e.getButton() == MouseEvent.BUTTON1) {
                 fire = true;
+                
+                
+                
+                int xVel2[] = new int[bullets];
+                int yVel2[] = new int [bullets];
 
                 xVel = (int) (Math.cos((angle)) * bulletSpeed);
 
@@ -724,6 +731,7 @@ public class Zombie_Playgrounds extends JComponent {
                 //
                 pending = true;
             }
+            bullets = bullets + 1;
 
         }
 
@@ -841,7 +849,7 @@ public class Zombie_Playgrounds extends JComponent {
         }
 
         // for loop to spawn enemies
-        if (on == false) {
+        if (on == true) {
             for (int i = 0; i < zombieWave; i++) {
                 enemyArray.add(new Rectangle(400 + (i * 50), 10, 36, 60));
 
