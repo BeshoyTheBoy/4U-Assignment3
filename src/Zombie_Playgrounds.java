@@ -53,6 +53,8 @@ public class Zombie_Playgrounds extends JComponent {
 
     // Bullet speeds
     int bulletSpeed = 10;
+    
+    int zombieHealth = 100;
 
     // Controls the delay in the shooting mechanism a.k.a "fire rate"
     int delay = 200;
@@ -211,8 +213,8 @@ public class Zombie_Playgrounds extends JComponent {
         blocks[4] = new Rectangle(600, 150, 700, 10); // right side of wall
 
         // for loop to spawn enemies
-        for (int i = 0; i < 1; i++) {
-            enemyArray.add(new Rectangle(400 + (i * 50), 10, 70, 70));
+        for (int i = 0; i < 10; i++) {
+            enemyArray.add(new Rectangle(400 + (i * 50), 10, 51, 84));
 
         }
 
@@ -578,16 +580,16 @@ public class Zombie_Playgrounds extends JComponent {
             player.x = 0;
         }
         // do not allow player to go off to the right
-        if (player.x >= 930) {
-            player.x = 930;
+        if (player.x >= 1000 - player.width) {
+            player.x = 1000 - player.width;
         }
         // do not allow player to go off to the top
         if (player.y <= 0) {
             player.y = 0;
         }
         // do not allow player to go off to the bottom
-        if (player.y >= 730) {
-            player.y = 730;
+        if (player.y >= 800 - player.width) {
+            player.y = 800 - player.width;
         }
 
         for (Rectangle enemy : enemyArray) {
@@ -597,16 +599,16 @@ public class Zombie_Playgrounds extends JComponent {
                 enemy.x = 0;
             }
             // do not allow enemy to go off to the right
-            if (enemy.x >= 950) {
-                enemy.x = 950;
+            if (enemy.x >= 1000 - enemy.width) {
+                enemy.x = 1000 - enemy.width;
             }
             // do not allow enemy to go off to the top
             if (enemy.y <= 0) {
                 enemy.y = 0;
             }
             // do not allow enemy to go off to the bottom
-            if (enemy.y >= 750) {
-                enemy.y = 750;
+            if (enemy.y >= 800 - enemy.height) {
+                enemy.y = (800 - enemy.height);
             }
         }
         // BOUNDRIES END HERE
@@ -720,7 +722,7 @@ public class Zombie_Playgrounds extends JComponent {
                     // remove the bullet
                     bullet.remove(i);
 
-                    // and the enemy 
+                    // and the enemy
                     enemyArray.remove(j);
 
                 }
