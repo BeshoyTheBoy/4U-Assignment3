@@ -82,7 +82,7 @@ public class Zombie_Playgrounds extends JComponent {
     double angle = 0;
     Robot r;
     // rectangle to act as player
-    Rectangle player = new Rectangle(300, 300, 70, 70);
+    Rectangle player = new Rectangle(500, 500, 70, 70);
     // array of all map elements
     Rectangle[] blocks = new Rectangle[5];
     // array list for enemies
@@ -735,11 +735,13 @@ public class Zombie_Playgrounds extends JComponent {
 
                     kills = kills + 1;
 
-                    // remove the bullet
-                    bullet.remove(i);
+                    
 
                     // and the enemy
                     enemyArray.remove(j);
+                    
+                    // remove the bullet
+                    bullet.remove(i);
 
                 }
 
@@ -812,23 +814,22 @@ public class Zombie_Playgrounds extends JComponent {
         Random spawn = new Random();
         int zombieWave = spawn.nextInt(15);
 
-
-
-
-
-
+        // essentially start time
         current = System.currentTimeMillis();
 
+        // if gametime is greater than spawn time allow zombies to spawn and give spawntime a 10 sec delay
         if (current > spawnTime) {
             on = false;
             spawnTime = current + spawnDelay;
-            System.out.println("test");
+            
         }
 
-        // for loop to spawn enemies
+        // for loop to spawn enemies in three differnet locations, 5 in each equaling 15
         if (on == false) {
-            for (int i = 0; i < 15; i++) {
-                enemyArray.add(new Rectangle(400 + (i * 50), 10, 36, 60));
+            for (int i = 0; i < 5; i++) {
+                enemyArray.add(new Rectangle(400, 300, 36, 60));
+                enemyArray.add(new Rectangle(800, 800, 36, 60));
+                enemyArray.add(new Rectangle(100, 800, 36, 60));
 
             }
             on = true;
@@ -841,7 +842,7 @@ public class Zombie_Playgrounds extends JComponent {
 
         for (int i = 0; i < enemyArray.size(); i++) {
 
-            // if the enemy is hitting a block at i i
+            // if the player is hitting a enemy at i i
             if (player.intersects(enemyArray.get(i))) {
                 // handle the collision with the block at i i
                 int overlapX = -1;
