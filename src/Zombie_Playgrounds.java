@@ -48,7 +48,7 @@ public class Zombie_Playgrounds extends JComponent {
     // for bullet velocities
     int xVel;
     int yVel;
-    
+
     int bullets = 0;
 
     int kills = 0;
@@ -221,6 +221,8 @@ public class Zombie_Playgrounds extends JComponent {
     // This method is used to do any pre-setup you might need to do
     // This is run before the game loop begins!
     public void preSetup() {
+        
+        System.out.println("Details of the game, along with persisting issues are located in commit message, enjoy");
 
         // create all the different blocks to use in the level
         // They are each in the array
@@ -230,11 +232,11 @@ public class Zombie_Playgrounds extends JComponent {
         blocks[3] = new Rectangle(0, 150, 400, 10); // left side of wall
         blocks[4] = new Rectangle(600, 150, 700, 10); // right side of wall
 
-//        // for loop to spawn enemies
-//        for (int i = 0; i < 10; i++) {
-//            enemyArray.add(new Rectangle(400 + (i * 50), 10, 36, 60));
-//
-//        }
+        // for loop to spawn enemies
+        for (int i = 0; i < 10; i++) {
+            enemyArray.add(new Rectangle(400 + (i * 50), 10, 36, 60));
+
+        }
         // MOUSE ROTATION
         try {
             r = new Robot();
@@ -272,6 +274,7 @@ public class Zombie_Playgrounds extends JComponent {
             bulletCollisions();
             playerHealth();
             enemySpawns();
+            enemyPlayerCollisions();
 
             // delay timer used to control fire rate for both players
             if (startTime > nextTime) {
@@ -354,11 +357,9 @@ public class Zombie_Playgrounds extends JComponent {
 
             if (e.getButton() == MouseEvent.BUTTON1) {
                 fire = true;
-                
-                
-                
+
                 int xVel2[] = new int[bullets];
-                int yVel2[] = new int [bullets];
+                int yVel2[] = new int[bullets];
 
                 xVel = (int) (Math.cos((angle)) * bulletSpeed);
 
@@ -818,7 +819,6 @@ public class Zombie_Playgrounds extends JComponent {
 
             // if player health = 0, the player is dead
             if (playerHealth == 0) {
-                System.out.println("You died");
                 System.out.println("You died with " + kills + " kills");
 
                 System.exit(0);
@@ -839,9 +839,8 @@ public class Zombie_Playgrounds extends JComponent {
         boolean on = false;
 
         long current = 0;
-        
+
         current = System.currentTimeMillis();
-        
 
         if (current > spawnTime) {
             on = false;
@@ -859,4 +858,75 @@ public class Zombie_Playgrounds extends JComponent {
         }
 
     }
+
+    public void enemyPlayerCollisions() {
+
+        for (int i = 0; i < enemyArray.size(); i++) {
+
+            // if the enemy is hitting a block at i i
+            if (player.intersects(enemyArray.get(i))) {
+                // handle the collision with the block at i i
+                int overlapX = -1;
+                // enemy is on the left
+                if (player.x <= enemyArray.get(i).x) {
+                    // right corner of enemy subtract left corner of blockwwwwwwwww
+                    overlapX = player.x + player.width - enemyArray.get(i).x;
+
+                } else {
+                    // right corner of block subtract left corner of enemy
+                    overlapX = enemyArray.get(i).x + enemyArray.get(i).width - player.x;
+                }
+
+                // do the same but for the y values
+                // set my overlap as a number - -1 means not set
+                int overlapY = -1;
+                // enemy is above the block
+                if (player.y <= enemyArray.get(i).y) {
+                    // bottom of enemy subtract top of block
+                    overlapY = player.y + player.height - enemyArray.get(i).y;
+                } else {
+                    // bottom of block subtract top of enemy
+                    overlapY = enemyArray.get(i).y + enemyArray.get(i).height - player.y;
+                }
+
+                // now check which overlap is smaller
+                // we will correct that one because it will be less obvious!
+                // fix the x overlapping
+                // move the enemys x i so the no longer hit the block
+                // we also fix the dx so that we are no longer changing that
+                if (overlapX < overlapY) {
+                    // which side am I on?
+                    // on the right side
+                    if (player.x <= enemyArray.get(i).x) {
+                        player.x = enemyArray.get(i).x - player.width;
+
+                    } else {
+                        player.x = enemyArray.get(i).x + enemyArray.get(i).width;
+
+                    }
+
+                } else {
+                    // fixing the y overlap in the same way
+                    // the difference this time is we have to deal with the dy and not dx
+
+                    // above the block
+                    if (player.y <= enemyArray.get(i).y) {
+                        // no more y collision
+                        player.y = enemyArray.get(i).y - player.height;
+
+                        // I'm on the block so not in the air!
+                    } else {
+                        // im under the block, just fix the overlap
+                        player.y = enemyArray.get(i).y + player.height;
+
+                        // take position of enemy, take size of object, compare them ( size of obj - position of enemy) if its less than half the obj - move left, if not move right
+                    }
+
+                }
+
+            }
+
+        }
+    }
+
 }
