@@ -43,85 +43,64 @@ public class Zombie_Playgrounds extends JComponent {
     // you just need to select an approproate framerate
     long desiredFPS = 60;
     long desiredTime = (1000) / desiredFPS;
-
     // YOUR GAME VARIABLES WOULD GO HERE
     // for bullet velocities
     int xVel;
     int yVel;
-
     int bullets = 0;
-
     int kills = 0;
-
+    long current = 0;
+    int spawnDelay = 10000;
+    long spawnTime = 0;
+    boolean on = false;
     // player health int
     int playerHealth = 150;
-
     // Bullet speeds
     int bulletSpeed = 10;
-
     int zombieHealth = 100;
-
     // Controls the delay in the shooting mechanism a.k.a "fire rate"
     int delay = 200;
     long nextTime = 0;
-
     //ADDED BY ME
     //we needa  delay between zombie's consecutive attacks
     int zombieHitDelay = 1000;
     long nextHit = 0;
-
     int regenDelay = 5000;
     long regenTime = 0;
-
     // booleans for w, a, s, d 
     boolean wPressed;
     boolean sPressed;
     boolean aPressed;
     boolean dPressed;
-
     // boolean for if zombie has attacked player
     boolean zombieHit = false;
-
     // boolean used to identify if the "shooting" button has been pressed
     boolean fire = false;
-
     // whether or not the bullet is travelling through the air
     boolean pending = false;
-
     // angle for determining where player is facing
     double angle = 0;
     Robot r;
-
     // rectangle to act as player
     Rectangle player = new Rectangle(300, 300, 70, 70);
-
     // array of all map elements
     Rectangle[] blocks = new Rectangle[5];
-
     // array list for enemies
     ArrayList<Rectangle> enemyArray = new ArrayList();
-
     // iterator for enemies
     Iterator<Rectangle> eit = enemyArray.iterator();
-
     // array list for bullets
     ArrayList<Rectangle> bullet = new ArrayList();
-
     // iterator for rectangles
     Iterator<Rectangle> it = bullet.iterator();
-
     // zombie image loaded
     BufferedImage zombie = loadImage("zombie.png");
-
     // player image loaded
     BufferedImage megaman = loadImage("megaman.png");
-
     // crate image loaded
     BufferedImage crate = loadImage("crate.png");
-
     // fence image loaded
     BufferedImage fence = loadImage("fence.png");
-
     BufferedImage background = loadImage("background.png");
 
     // GAME VARIABLES END HERE
@@ -221,7 +200,7 @@ public class Zombie_Playgrounds extends JComponent {
     // This method is used to do any pre-setup you might need to do
     // This is run before the game loop begins!
     public void preSetup() {
-        
+
         System.out.println("Details of the game, along with persisting issues are located in commit message, enjoy");
 
         // create all the different blocks to use in the level
@@ -232,11 +211,11 @@ public class Zombie_Playgrounds extends JComponent {
         blocks[3] = new Rectangle(0, 150, 400, 10); // left side of wall
         blocks[4] = new Rectangle(600, 150, 700, 10); // right side of wall
 
-        // for loop to spawn enemies
-        for (int i = 0; i < 10; i++) {
-            enemyArray.add(new Rectangle(400 + (i * 50), 10, 36, 60));
-
-        }
+//        // for loop to spawn enemies
+//        for (int i = 0; i < 10; i++) {
+//            enemyArray.add(new Rectangle(400 + (i * 50), 10, 36, 60));
+//
+//        }
         // MOUSE ROTATION
         try {
             r = new Robot();
@@ -729,7 +708,7 @@ public class Zombie_Playgrounds extends JComponent {
             if (pending == false) {
                 bullet.add(new Rectangle(player.x + 50, player.y + 28, 10, 10));
 
-                //
+
                 pending = true;
             }
             bullets = bullets + 1;
@@ -831,25 +810,24 @@ public class Zombie_Playgrounds extends JComponent {
 
     public void enemySpawns() {
         Random spawn = new Random();
-        int zombieWave = spawn.nextInt(20);
+        int zombieWave = spawn.nextInt(15);
 
-        int spawnDelay = 15000;
-        long spawnTime = 0;
 
-        boolean on = false;
 
-        long current = 0;
+
+
 
         current = System.currentTimeMillis();
 
         if (current > spawnTime) {
             on = false;
             spawnTime = current + spawnDelay;
+            System.out.println("test");
         }
 
         // for loop to spawn enemies
-        if (on == true) {
-            for (int i = 0; i < zombieWave; i++) {
+        if (on == false) {
+            for (int i = 0; i < 15; i++) {
                 enemyArray.add(new Rectangle(400 + (i * 50), 10, 36, 60));
 
             }
@@ -928,5 +906,4 @@ public class Zombie_Playgrounds extends JComponent {
 
         }
     }
-
 }
