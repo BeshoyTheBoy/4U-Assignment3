@@ -22,7 +22,7 @@ public class A3Q4 {
             //set num to equal position of tracker array then add 1
             tracker[num]= tracker[num] + 1;
         }
-       
+      
     }
     
     /**
@@ -38,7 +38,7 @@ public class A3Q4 {
         array[2] = 5;
         array[3] = 4;
         array[4] = 6;
-        
+
         test.countingSort(array);
     }
     
