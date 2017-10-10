@@ -11,10 +11,10 @@ public class A3Q3 {
 
     public int countOnes(int[] array) {
         //create int to store number of 1s found
-            int ones = 0;
+        int ones = 0;
         //start at first position
         for (int position = 0; position < array.length; position++) {
-            
+
             //if the number in the position equals 1, store it in variable
             if (array[position] == 1) {
                 ones = ones + 1;
