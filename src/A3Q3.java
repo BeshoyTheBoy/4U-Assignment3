@@ -37,7 +37,7 @@ public class A3Q3 {
         array[2] = 1;
         array[3] = 0;
         array[4] = 1;
-
+        
         System.out.println("The number of ones is: " + test.countOnes(array));
     }
 }
