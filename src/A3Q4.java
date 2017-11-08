@@ -11,10 +11,10 @@ public class A3Q4 {
 
     public void countingSort(int array[]) {
         int num = 0;
-
+        int spot = 0;
         //Create tracker array 
         int[] tracker = new int[101];
-        
+
         //go through input array 
         for (int i = 0; i < array.length - 1; i++) {
             //find number inside array
@@ -23,11 +23,14 @@ public class A3Q4 {
             tracker[num] = num + 1;
             num++;
         }
-        
-        // testing tracker array
-        for (int i = 0; i < tracker.length - 1; i++) {
-            System.out.println(tracker[i]);
+
+        //reorganize the input array
+        for (int i = 0; i < tracker.length; i++) {
+            for (int j = 0; j < tracker[i]; j++) {
+                System.out.println(i);
+            }
         }
+
     }
 
     /**
@@ -38,11 +41,21 @@ public class A3Q4 {
         A3Q4 test = new A3Q4();
 
         int[] array = new int[101];
+        System.out.println("BEFORE: ");
         for (int i = 0; i < array.length; i++) {
             //make a random number
             array[i] = (int) (Math.random() * 101);
+            //sout int
+            System.out.println(array[i]);
         }
-        
+        System.out.println("");
+        System.out.println("");
+        // run method
+        System.out.println("AFTER: ");
         test.countingSort(array);
+
+       
+            
+        
     }
 }
