@@ -26,11 +26,13 @@ public class A3Q4 {
 
         //reorganize the input array
         for (int i = 0; i < tracker.length; i++) {
-            for (int j = 0; j < tracker[i]; j++) {
-                System.out.println(i);
+            // if spot inside array greater than 0
+            if(tracker[i] > 0){
+                array[spot] = i;
+                tracker[i]--;
+                spot++;
             }
         }
-
     }
 
     /**
@@ -40,20 +42,24 @@ public class A3Q4 {
         // TODO code application logic here
         A3Q4 test = new A3Q4();
 
-        int[] array = new int[101];
+        int[] array = new int[11];
         System.out.println("BEFORE: ");
         for (int i = 0; i < array.length; i++) {
             //make a random number
-            array[i] = (int) (Math.random() * 101);
+            array[i] = (int) (Math.random() * 11);
             //sout int
             System.out.println(array[i]);
         }
         System.out.println("");
         System.out.println("");
+        
         // run method
         System.out.println("AFTER: ");
         test.countingSort(array);
-
+        
+        for (int i = 0; i < 10; i++) {
+            System.out.println(array[i]);
+        }
        
             
         
