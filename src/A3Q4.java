@@ -28,8 +28,11 @@ public class A3Q4 {
         for (int i = 0; i < tracker.length; i++) {
             // if spot inside array greater than 0
             if(tracker[i] > 0){
+                //let array at spot equal i
                 array[spot] = i;
+                // subtract 1 from tracker at i
                 tracker[i]--;
+                // add 1 to spot counter
                 spot++;
             }
         }
