@@ -42,11 +42,11 @@ public class A3Q4 {
         // TODO code application logic here
         A3Q4 test = new A3Q4();
 
-        int[] array = new int[11];
+        int[] array = new int[101];
         System.out.println("BEFORE: ");
         for (int i = 0; i < array.length; i++) {
             //make a random number
-            array[i] = (int) (Math.random() * 11);
+            array[i] = (int) (Math.random() * 101);
             //sout int
             System.out.println(array[i]);
         }
@@ -57,7 +57,7 @@ public class A3Q4 {
         System.out.println("AFTER: ");
         test.countingSort(array);
         
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < array.length; i++) {
             System.out.println(array[i]);
         }
        
